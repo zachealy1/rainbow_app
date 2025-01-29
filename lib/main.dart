@@ -33,11 +33,28 @@ class _RainbowScreenState extends State<RainbowScreen> {
     Colors.purple,
   ];
 
+  final List<String> colorNames = [
+    "Red",
+    "Orange",
+    "Yellow",
+    "Green",
+    "Blue",
+    "Indigo",
+    "Purple",
+  ];
+
   bool isVertical = true;
+  bool showText = false;
 
   void _toggleOrientation() {
     setState(() {
       isVertical = !isVertical;
+    });
+  }
+
+  void _toggleText() {
+    setState(() {
+      showText = !showText;
     });
   }
 
@@ -46,21 +63,62 @@ class _RainbowScreenState extends State<RainbowScreen> {
     return GestureDetector(
       onTap: _toggleOrientation,
       child: Scaffold(
-        // The AppBar with the title "Rainbow"
         appBar: AppBar(
           title: const Text('Rainbow'),
           backgroundColor: Colors.blue,
         ),
-        body: isVertical
-            ? Row(
-          children: rainbowColors
-              .map((color) => Expanded(child: Container(color: color)))
-              .toList(),
-        )
-            : Column(
-          children: rainbowColors
-              .map((color) => Expanded(child: Container(color: color)))
-              .toList(),
+        body: Stack(
+          children: [
+            isVertical
+                ? Row(
+              children: List.generate(
+                rainbowColors.length,
+                    (index) => Expanded(
+                  child: Container(
+                    color: rainbowColors[index],
+                    child: showText
+                        ? Center(
+                      child: Text(
+                        colorNames[index],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                        : null,
+                  ),
+                ),
+              ),
+            )
+                : Column(
+              children: List.generate(
+                rainbowColors.length,
+                    (index) => Expanded(
+                  child: Container(
+                    color: rainbowColors[index],
+                    child: showText
+                        ? Center(
+                      child: Text(
+                        colorNames[index],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                        : null,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _toggleText,
+          child: const Icon(Icons.toggle_on),
         ),
       ),
     );
