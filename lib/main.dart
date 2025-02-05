@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const RainbowApp());
@@ -23,6 +24,8 @@ class RainbowScreen extends StatefulWidget {
 }
 
 class _RainbowScreenState extends State<RainbowScreen> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
   final List<Color> rainbowColors = const [
     Colors.red,
     Colors.orange,
@@ -43,6 +46,16 @@ class _RainbowScreenState extends State<RainbowScreen> {
     "Purple",
   ];
 
+  final List<String> soundFiles = [
+    "note1.wav",
+    "note2.wav",
+    "note3.wav",
+    "note4.wav",
+    "note5.wav",
+    "note6.wav",
+    "note7.wav",
+  ];
+
   bool isVertical = true;
   bool showText = false;
 
@@ -56,6 +69,10 @@ class _RainbowScreenState extends State<RainbowScreen> {
     setState(() {
       showText = !showText;
     });
+  }
+
+  Future<void> _playSound(int index) async {
+    await _audioPlayer.play(AssetSource(soundFiles[index]));
   }
 
   @override
@@ -74,20 +91,23 @@ class _RainbowScreenState extends State<RainbowScreen> {
               children: List.generate(
                 rainbowColors.length,
                     (index) => Expanded(
-                  child: Container(
-                    color: rainbowColors[index],
-                    child: showText
-                        ? Center(
-                      child: Text(
-                        colorNames[index],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  child: GestureDetector(
+                    onTap: () => _playSound(index),
+                    child: Container(
+                      color: rainbowColors[index],
+                      child: showText
+                          ? Center(
+                        child: Text(
+                          colorNames[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    )
-                        : null,
+                      )
+                          : null,
+                    ),
                   ),
                 ),
               ),
@@ -96,20 +116,23 @@ class _RainbowScreenState extends State<RainbowScreen> {
               children: List.generate(
                 rainbowColors.length,
                     (index) => Expanded(
-                  child: Container(
-                    color: rainbowColors[index],
-                    child: showText
-                        ? Center(
-                      child: Text(
-                        colorNames[index],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  child: GestureDetector(
+                    onTap: () => _playSound(index),
+                    child: Container(
+                      color: rainbowColors[index],
+                      child: showText
+                          ? Center(
+                        child: Text(
+                          colorNames[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    )
-                        : null,
+                      )
+                          : null,
+                    ),
                   ),
                 ),
               ),
