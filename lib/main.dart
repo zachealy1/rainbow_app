@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart'; // For haptic feedback
 
 void main() {
   runApp(const RainbowApp());
@@ -26,7 +27,7 @@ class RainbowScreen extends StatefulWidget {
 class _RainbowScreenState extends State<RainbowScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  final List<Color> rainbowColors = const [
+  final List<Color> defaultColors = const [
     Colors.red,
     Colors.orange,
     Colors.yellow,
@@ -56,8 +57,15 @@ class _RainbowScreenState extends State<RainbowScreen> {
     "note7.wav",
   ];
 
+  List<Color> currentColors = [];
   bool isVertical = true;
   bool showText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    currentColors = List.from(defaultColors);
+  }
 
   void _toggleOrientation() {
     setState(() {
@@ -75,13 +83,26 @@ class _RainbowScreenState extends State<RainbowScreen> {
     await _audioPlayer.play(AssetSource(soundFiles[index]));
   }
 
+  void _changeColor(int index) {
+    setState(() {
+      currentColors[index] = Colors.grey;
+    });
+
+    // Restore the color after 1 second
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        currentColors[index] = defaultColors[index];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _toggleOrientation,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Rainbow'),
+          title: const Text('Rainbow Xylophone'),
           backgroundColor: Colors.blue,
         ),
         body: Stack(
@@ -89,12 +110,24 @@ class _RainbowScreenState extends State<RainbowScreen> {
             isVertical
                 ? Row(
               children: List.generate(
-                rainbowColors.length,
+                defaultColors.length,
                     (index) => Expanded(
                   child: GestureDetector(
-                    onTap: () => _playSound(index),
+                    onTap: () {
+                      _playSound(index);
+                    },
+                    onDoubleTap: () {
+                      int nextIndex = (index + 1) % soundFiles.length;
+                      _playSound(nextIndex);
+                    },
+                    onLongPress: () {
+                      _changeColor(index);
+                    },
+                    onTapDown: (details) {
+                      HapticFeedback.mediumImpact();
+                    },
                     child: Container(
-                      color: rainbowColors[index],
+                      color: currentColors[index],
                       child: showText
                           ? Center(
                         child: Text(
@@ -114,12 +147,24 @@ class _RainbowScreenState extends State<RainbowScreen> {
             )
                 : Column(
               children: List.generate(
-                rainbowColors.length,
+                defaultColors.length,
                     (index) => Expanded(
                   child: GestureDetector(
-                    onTap: () => _playSound(index),
+                    onTap: () {
+                      _playSound(index);
+                    },
+                    onDoubleTap: () {
+                      int nextIndex = (index + 1) % soundFiles.length;
+                      _playSound(nextIndex);
+                    },
+                    onLongPress: () {
+                      _changeColor(index);
+                    },
+                    onTapDown: (details) {
+                      HapticFeedback.mediumImpact();
+                    },
                     child: Container(
-                      color: rainbowColors[index],
+                      color: currentColors[index],
                       child: showText
                           ? Center(
                         child: Text(
